@@ -1,0 +1,19 @@
+# PdfUnlocker password list (sample)
+#
+# Copy this file to "PdfUnlocker.config" in the same folder as PdfUnlocker.exe
+# and replace the entries below with your real passwords.
+#
+# Rules:
+#   - One candidate password per line.
+#   - Passwords are tried in order, top to bottom.
+#   - Blank lines and lines starting with '#' (this one included) are ignored.
+#   - IMPORTANT: passwords are NOT trimmed. Leading and trailing spaces are kept
+#     exactly as written, because they may be a real part of the password.
+#     For example, the next line is the 8-character password "hunter2 "
+#     (note the trailing space) and NOT "hunter2":
+#
+# hunter2
+
+MyFirstPassword
+Another-Password-123
+correct horse battery staple

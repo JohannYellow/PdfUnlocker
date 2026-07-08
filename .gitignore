@@ -39,6 +39,11 @@ ScaffoldingReadMe.txt
 # dotenv environment variables file
 .env
 
+# Real password list (contains real passwords); only the .sample is committed
+PdfUnlocker.config
+# Log left behind by failed runs
+PdfUnlocker.log
+
 # Others
 ~$*
 *~

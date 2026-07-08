@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PdfUnlocker/PdfUnlocker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PdfUnlocker.Tests/PdfUnlocker.Tests.csproj" />
+  </Folder>
+</Solution>
