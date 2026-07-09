@@ -23,4 +23,9 @@
     <InternalsVisibleTo Include="PdfUnlocker.Tests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Ship the sample config next to the exe so it can be copied to PdfUnlocker.config. -->
+    <None Include="..\..\PdfUnlocker.config.sample" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
