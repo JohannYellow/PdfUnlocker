@@ -57,7 +57,8 @@ internal static class Unlocker
         IReadOnlyList<string> passwords = ConfigLoader.Load(configPath);
         if (passwords.Count == 0)
             throw new UnlockException(ExitCode.ConfigMissing,
-                $"Input is encrypted but no usable passwords were found in '{configPath}'.");
+                $"Input is encrypted but no usable passwords were found in '{configPath}'. " +
+                "Add your passwords to that file (run PdfUnlockerSetup.exe to create it).");
 
         foreach (string password in passwords)
         {

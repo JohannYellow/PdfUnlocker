@@ -7,9 +7,36 @@ This is a convenience tool for your own protected documents — it only ever tri
 passwords from a list you maintain. It does not guess, brute-force, or attack unknown
 passwords.
 
+## Installation
+
+1. Download **`PdfUnlockerSetup.exe`** from the
+   [latest release](https://github.com/JohannYellow/PdfUnlocker/releases/latest). No .NET
+   runtime is needed. The exe is not code-signed, so Windows SmartScreen may warn on first
+   run: choose *More info → Run anyway*.
+2. Double-click `PdfUnlockerSetup.exe` and click **OK**. Setup:
+   - copies the program to `%APPDATA%\PdfUnlocker\PdfUnlocker.exe` (your own user folder,
+     no admin rights needed);
+   - creates `%APPDATA%\PdfUnlocker\PdfUnlocker.config` if it doesn't exist yet (an
+     existing config is never overwritten);
+   - adds **PDF Unlocker** to your right-click *Send to* menu;
+   - opens the config in Notepad.
+3. Add your passwords to the config, one per line, and save it.
+4. Right-click a PDF → **Send to → PDF Unlocker**. On Windows 11, choose *Show more
+   options* first to see *Send to*.
+
+`PdfUnlockerSetup.exe` can be deleted after setup. To upgrade, run the new version's setup;
+your passwords are kept.
+
+**Optional, Open With:** right-click a PDF → *Open with* → *Choose another app* → *More
+apps* → *Look for another app on this PC* → browse to `%APPDATA%\PdfUnlocker\PdfUnlocker.exe`.
+
+**Uninstall:** delete the `%APPDATA%\PdfUnlocker` folder and the *PDF Unlocker* shortcut in
+your Send To folder (press `Win+R` and run `shell:sendto` to open it).
+
 ## How it works
 
-Given a PDF path as its single argument, PdfUnlocker:
+Started with no arguments (double-clicked), the exe runs the setup described above. Given a
+PDF path as its argument, PdfUnlocker:
 
 1. Tries to open the PDF with no password. If it opens, it was never encrypted — it just
    writes the copy.
@@ -27,7 +54,7 @@ is no usable input) explaining why. A successful run leaves no log — only the
 | Code | Meaning                                            |
 |------|----------------------------------------------------|
 | 0    | Success (file unlocked, or input was unencrypted). |
-| 1    | Usage error (missing/invalid argument).            |
+| 1    | Usage error (blank/invalid argument).              |
 | 2    | Input file not found / not readable.               |
 | 3    | Config missing or empty (for an encrypted input).  |
 | 4    | No configured password unlocked the file.          |
@@ -37,8 +64,9 @@ is no usable input) explaining why. A successful run leaves no log — only the
 ## Configuration
 
 `PdfUnlocker.config` lives in the **same folder as `PdfUnlocker.exe`** (not the current
-working directory). Copy `PdfUnlocker.config.sample` to `PdfUnlocker.config` and fill in
-your passwords, one per line.
+working directory), which after setup is `%APPDATA%\PdfUnlocker`. Setup creates it from
+the template [`PdfUnlocker.config.sample`](PdfUnlocker.config.sample), which is embedded in
+the exe. Add your passwords one per line.
 
 - Blank lines and lines starting with `#` are ignored.
 - Passwords are tried top to bottom.
@@ -46,18 +74,6 @@ your passwords, one per line.
   be a real part of a password.
 
 The real `PdfUnlocker.config` is git-ignored so your passwords are never committed.
-
-## Installation
-
-1. Build a single-file exe (see below) and copy `PdfUnlocker.exe` into
-   `C:\Programs\PdfUnlocker\`.
-2. Copy `PdfUnlocker.config.sample` to `C:\Programs\PdfUnlocker\PdfUnlocker.config` and
-   fill in your real passwords.
-3. **Send To (recommended for a utility):** press `Win+R`, run `shell:sendto`, and drop a
-   **shortcut** to `PdfUnlocker.exe` in that folder. The tool then appears under
-   right-click → *Send to → PdfUnlocker*.
-4. **Open With:** right-click a PDF → *Open with* → *Choose another app* → *More apps* →
-   *Look for another app on this PC* → browse to `PdfUnlocker.exe`.
 
 ## Building
 
@@ -77,7 +93,11 @@ dotnet publish src/PdfUnlocker/PdfUnlocker.csproj `
 ```
 
 The published exe is self-contained: it runs on a machine with **no .NET runtime
-installed**.
+installed**. The project file already sets those options, so `dotnet publish
+src/PdfUnlocker/PdfUnlocker.csproj -c Release` is enough. Publishing also writes
+`PdfUnlockerSetup.exe` to the same `publish` folder: an identical copy under the setup name,
+which is the file to attach to a GitHub release. A plain `dotnet build` doesn't create it,
+because build output isn't self-contained.
 
 ### Changing the target framework
 

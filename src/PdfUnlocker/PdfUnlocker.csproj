@@ -6,6 +6,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Version>1.0.0</Version>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
@@ -17,6 +18,9 @@
   <ItemGroup>
     <!-- 6.2.0+ required: adds revision-5 (AES-256) decryption support. -->
     <PackageReference Include="PDFsharp" Version="6.2.4" />
+    <!-- PDFsharp 6.2.4 pulls in 8.0.1, which has known DoS advisories (CVE-2026-70162,
+         CVE-2026-84008). Pin a patched version; remove once PDFsharp references one itself. -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.15" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,8 +28,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Ship the sample config next to the exe so it can be copied to PdfUnlocker.config. -->
-    <None Include="..\..\PdfUnlocker.config.sample" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Embedded so setup can write it out as the initial PdfUnlocker.config. -->
+    <EmbeddedResource Include="..\..\PdfUnlocker.config.sample" LogicalName="PdfUnlocker.config.sample" />
   </ItemGroup>
+
+  <!-- The release download is the same single-file exe under a setup name: started with no
+       arguments it installs itself (see Setup.cs). Only publish output is self-contained, so
+       this runs after Publish, not Build. -->
+  <Target Name="CreateSetupExe" AfterTargets="Publish">
+    <Copy SourceFiles="$(PublishDir)$(AssemblyName).exe" DestinationFiles="$(PublishDir)PdfUnlockerSetup.exe" />
+    <Message Importance="high" Text="$(AssemblyName) -> $([System.IO.Path]::GetFullPath('$(PublishDir)PdfUnlockerSetup.exe'))" />
+  </Target>
 
 </Project>

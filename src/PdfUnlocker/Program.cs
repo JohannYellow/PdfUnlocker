@@ -3,6 +3,11 @@ using PdfUnlocker;
 // Entry point + orchestration only (spec §3): parse the argument, set up the log next to the
 // input (falling back to the exe folder), run the unlock, and map the result to an exit code.
 
+// No arguments means the exe was double-clicked (e.g. PdfUnlockerSetup.exe): run setup.
+// Send To always passes the PDF path, so the installed copy never lands here by accident.
+if (args.Length == 0)
+    return (int)Setup.RunInteractive();
+
 string exeDir = AppContext.BaseDirectory;
 
 string? inputPath = args.Length > 0 && !string.IsNullOrWhiteSpace(args[0]) ? args[0] : null;

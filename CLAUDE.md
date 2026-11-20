@@ -21,6 +21,21 @@ implementation follows it and its VERIFY items have been resolved empirically (s
   and `SecurityHandler.UserPassword = …`; the 6.2.x security API is on `SecurityHandler`,
   not the old `SecuritySettings.DocumentSecurityLevel`.
 - `AppContext.BaseDirectory` resolves the exe folder correctly under single-file publish.
+- A published single-file exe still runs after being renamed, which is how the release's
+  `PdfUnlockerSetup.exe` is produced (a renamed copy of the published `PdfUnlocker.exe`).
+- PDFsharp 6.2.4 pulls in `System.Security.Cryptography.Pkcs` 8.0.1, which has DoS
+  advisories; the app `.csproj` pins a patched version directly.
+
+### Setup mode (deviation from the original spec)
+
+Started with **no arguments** (double-clicked), the exe runs `Setup.RunInteractive`
+instead of failing with a usage error: an OK/Cancel message box, then it copies itself to
+`%APPDATA%\PdfUnlocker\PdfUnlocker.exe`, creates `PdfUnlocker.config` from the embedded
+`PdfUnlocker.config.sample` **only if missing** (never overwrite the user's passwords),
+creates a "PDF Unlocker" `.lnk` in the Send To folder (`ShellLink.cs`, IShellLink COM
+interop), and opens the config in Notepad. `Setup.Install` is the testable core; tests
+must only ever point it at temp folders, never the real %APPDATA% or Send To. The sample
+config must contain no active (uncommented) passwords. A blank argument still exits 1.
 
 ## Commands
 
@@ -74,7 +89,7 @@ passwords) — only `PdfUnlocker.config.sample`.
 - PDF library: NuGet package `PdfSharp` (empira 6.x), **version 6.2.0+ required** — that
   version added revision-5 (AES-256) decryption support.
 - Ships as a single self-contained `PdfUnlocker.exe` (no installer, no external runtime
-  dependency), deployed to `C:\Programs\PdfUnlocker\PdfUnlocker.exe`.
+  dependency), installed by its own setup mode to `%APPDATA%\PdfUnlocker\PdfUnlocker.exe`.
 - No third-party dependencies beyond PdfSharp and the BCL.
 
 ## Build / publish commands
