@@ -121,3 +121,9 @@ fields. This approach is used because it also works when the file carries a sepa
 *owner* password you don't have. If you need to preserve everything and the file has no
 owner-password restriction, a re-save-in-place approach would retain more, but that path
 can be blocked by an owner password.
+
+## License
+
+PdfUnlocker is released under the [MIT License](LICENSE). The released exe bundles
+PDFsharp and the .NET runtime, which are also MIT-licensed; see
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
